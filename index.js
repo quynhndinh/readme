@@ -1,71 +1,70 @@
-const fs = require("fs");
-const axios = require("axios");
-const inquirer = require("inquirer");
-const markdown = require("./utils/generateMarkdown");
+// TODO: Include packages needed for this application
+const inquirer = require('inquirer');
+const fs = require('fs');
+const generateMarkdown = require('./utils/generateMarkdown');
 
+// TODO: Create an array of questions for user input
 const questions = [
-    {   
-        message: "What is the name of the project?",
-        name: "title"
+    {
+        type: 'input',
+        message: 'What is the title of your project?',
+        name: 'title',
     },
-    {   
-        message: "Please provide a table on content",
-        name: "table of content"
+    {
+        type: 'input',
+        message: 'What is a description of the project?',
+        name: 'description',
     },
-    {   
-        message: "What is the name of the user?",
-        name: "userName"
+    {
+        type: 'input',
+        message: 'What are the instructions for installation?',
+        name: 'installation',
     },
-    {  
-        message: "Please provide a description of the project",
-        name: "description"
+    {
+        type: 'input',
+        message: 'Describe how to use this repo',
+        name: 'usage',
     },
-    {   
-        message: "What is the installation process?",
-        name: "installation"
+    {
+        type: 'input',
+        message: 'What command should be used to run tests?',
+        name: 'tests',
     },
-    {   
-        message: "How will this project be used?",
-        name: "usage"
+    {
+        type: 'list',
+        message: 'Choose the license for your project.',
+        name: 'license',
+        choices: ['MIT','Apache','no license'],
     },
-    {   
-        message: "What licenses are required with this project?",
-        name: "licenses"
+    {
+        type: 'input',
+        message: 'What is your Github username?',
+        name: 'github',
     },
-    {   
-        message: "Who were the contributors to this project?",
-        name: "contribution"
+    {
+        type: 'input',
+        message: 'What is your email address?',
+        name: 'email',
     },
-    {   
-        message: "What is the test process for this project?",
-        name: "test"
-    },
-    {   
-        message: "What is the user github email address?",
-        name: "GitHub user email"
-    },
-    {   
-        message: "Please provide a profile picture",
-        name: "GitHub profile picture"
-    }
-]
-
-function init () {
-    inquirer.prompt(questions)
-    .then((inquirerResponse, data) => {   
-        console.log("Making ReadMe");
-        fs.writeFileSync("ReadMe.md", inquirerResponse, data);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+    ];
+// TODO: Create a function to write README file
+function writeToFile(fileName, data) {
+    fs.writeFile(fileName, data, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Readme Generated')
+        }
+    });
 }
 
+// TODO: Create a function to initialize app
+function init() {
+    inquirer.prompt(questions).then((answers) => {
+        console.log(answers);
+        var readmeAnswer = generateMarkdown(answers);
+        writeToFile("README.md", readmeAnswer);
+    });
+};
+// Function call to initialize app
 init();
-
-const userName = questions.userName
-
-axios.get(`https://api.github.com/users/${userName}`)
-.then(questions => {
-  console.log(questions.data);
-});
